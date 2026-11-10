@@ -1,0 +1,71 @@
+{
+  "$comment": "BlockGTA6 shared rules. DATA ONLY - no executable code. Every client (extension, Android, iOS) loads this file and applies it with the algorithm described in rules/README.md. Scope: ALL GTA 6 / GTA VI content. Older GTA games (GTA 5, GTA Online, Vice City 2002) must NOT be blocked by default.",
+  "version": 1,
+  "updated": "2026-11-10",
+  "scope": "gta6",
+
+  "regex": [
+    { "id": "gta-6",       "pattern": "\\bg ?t ?a ?6(?![0-9])" },
+    { "id": "gta-vi",      "pattern": "\\bg ?t ?a ?vi(?![a-z0-9])" },
+    { "id": "gta-six",     "pattern": "\\bg ?t ?a ?six(?![a-z])" },
+    { "id": "gtavi-tag",   "pattern": "\\bgtavi(trailer|trailers|leak|leaks|news|online|map|gameplay|release|hype|memes?)\\b" },
+    { "id": "gta-sixth",   "pattern": "\\bsixth (gta|grand theft auto)\\b" },
+    { "id": "gta-next",    "pattern": "\\b(next|new|upcoming) (gta|grand theft auto)( game)?\\b(?! online)(?! 5)(?! v\\b)(?! trilogy)(?! definitive)" },
+    { "id": "grand-theft", "pattern": "\\bgrand ?theft ?auto ?(6|vi|six)(?![a-z0-9])" }
+  ],
+
+  "unique": [
+    "jason duval", "lucia caminos",
+    "leonida", "leonida keys", "port gellhorn", "grassrivers", "mount kalaga",
+    "boobie ike", "dre quan priest", "real dimez", "raul bautista", "brian heder", "cal hampton"
+  ],
+
+  "contextual": [
+    {
+      "term": "vice city",
+      "requiresAny": ["rockstar", "leonida", "jason", "lucia", "trailer 3", "2026", "2027"],
+      "unlessAny": ["vice city stories", "definitive edition", "trilogy", "tommy vercetti", "2002", "remaster", "remastered"]
+    },
+    {
+      "term": "lucia",
+      "requiresAny": ["gta", "grand theft auto", "rockstar", "jason", "vice city", "leonida"],
+      "unlessAny": ["gta 5", "gta v", "gta online", "gta iv", "san andreas"]
+    },
+    {
+      "term": "jason",
+      "requiresAny": ["lucia", "gta", "grand theft auto", "rockstar", "leonida", "vice city"],
+      "unlessAny": ["gta 5", "gta v", "gta online", "gta iv", "san andreas", "voorhees"]
+    },
+    {
+      "term": "ambrosia",
+      "requiresAny": ["gta", "grand theft auto", "rockstar", "leonida", "vice city"],
+      "unlessAny": []
+    },
+    {
+      "term": "rockstar",
+      "requiresAny": ["trailer 3", "new trailer", "launch trailer", "release date", "preload", "pre load", "pre order", "preorder", "november 19", "nov 19"],
+      "unlessAny": ["red dead", "rdr", "rdr2", "gta online", "gta 5", "gta v", "bully", "max payne", "la noire"]
+    }
+  ],
+
+  "youtube": {
+    "channelIds": [],
+    "$comment": "Rockstar Games' own channel is intentionally NOT blocked wholesale: it also posts GTA Online / Red Dead content. Its GTA 6 uploads are caught by the keyword match."
+  },
+
+  "reddit": {
+    "subreddits": ["GTA6", "GTAVI"]
+  },
+
+  "domains": {
+    "hostContains": ["gta6", "gta-6", "gta-vi", "grandtheftauto6", "grandtheftautovi"],
+    "urlPrefixes": [
+      "rockstargames.com/VI",
+      "www.rockstargames.com/VI",
+      "reddit.com/r/GTA6", "www.reddit.com/r/GTA6", "old.reddit.com/r/GTA6",
+      "reddit.com/r/GTAVI", "www.reddit.com/r/GTAVI", "old.reddit.com/r/GTAVI"
+    ]
+  },
+
+  "allowlist": []
+}

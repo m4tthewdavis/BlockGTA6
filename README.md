@@ -1,6 +1,14 @@
 # BlockGTA6
 
-A cross-platform blocker that hides GTA 6 content (trailers, leaks, spoilers, news) on YouTube,
-social media and the web. It works on desktop browsers, Android and iOS.
+A cross-platform blocker that hides **all GTA 6 / GTA VI content** (trailers, leaks, news,
+memes, spoilers) on YouTube, social media and the web. It works on desktop browsers, Android and iOS.
+Older GTA games (GTA 5, GTA Online, Vice City 2002) are left alone.
 
-**Status:** planning. See [PLAN.md](PLAN.md) for the architecture, platform approach and roadmap.
+- 📱 **Need it right now?** [Block GTA 6 on your phone in 5 minutes](docs/mute-guide.md), using
+  each app's built-in mute settings.
+- 🗺️ [PLAN.md](PLAN.md): architecture, per-platform approach, research and roadmap.
+- 📋 [rules/](rules/): the shared blocklist (`rules.json`), the matching algorithm and test vectors.
+
+**Status:** the plan, shared rules and mute guide are done. The browser extension is next.
+
+*Not affiliated with Rockstar Games or Take-Two Interactive.*

@@ -174,7 +174,7 @@ Web Store's no-remote-code rule and by App Store review.
     "\\bgrand\\s*theft\\s*auto\\s*(6|vi|six)\\b"
   ],
   "channels": { "youtube": ["<Rockstar Games channel id>"] },
-  "subreddits": ["GTA6", "GTAVI", "GTA6_Leaks"],
+  "subreddits": ["GTA6", "GTAVI"],
   "domains": { "block": [], "pathBlock": ["rockstargames.com/VI"] },
   "allowlist": []           // user overrides, e.g. "gta 5"
 }
@@ -188,12 +188,13 @@ Web Store's no-remote-code rule and by App Store review.
   "Vice City" on its own is also the 2002 game, "Ambrosia" is a common word and "Lucia" a common
   name. Names come from Rockstar's May 2025 character/location reveal. Refresh the list
   after launch, when many more names appear (shipping it as remote data makes that easy).
-- Modes the user can choose:
-  - **Spoiler-safe** (default): GTA 6 only.
-  - **All GTA**: also GTA 5/Online.
-  - **Custom**: their own keywords.
-- Actions: **hide** the item, **blur with a "click to reveal" shield**, or **block the page**
-  (for direct links to a GTA 6 video or trailer).
+- **Decided (10 Nov):** the default scope is **all GTA 6 / GTA VI content**: trailers, news,
+  leaks, memes, gameplay and spoilers alike. Older GTA games (GTA 5, GTA Online, the 2002 Vice
+  City) are **not** blocked. Optional extras: "All GTA" (adds GTA 5/Online) and "Custom".
+- Default action: **hide** the item completely. Options: **blur with a "click to reveal" shield**,
+  or **block the page** (for direct links to a GTA 6 video or trailer).
+- The Rockstar Games channel/accounts are **not** blocked wholesale, because they also post
+  GTA Online/RDR content. Their GTA 6 posts are caught by the keyword match.
 
 ### 2.3 One spec, three implementations
 The extension (TypeScript), Android (Kotlin) and iOS (Swift) each need a matcher. Keep it
@@ -445,7 +446,7 @@ worthwhile: the spoiler period lasts weeks after launch, and comes back for the 
 - A determined user can uninstall the blocker; commitment mode only adds friction.
 
 ## 12. Immediate next steps (in order, starting 10 Nov)
-1. Decide the default mode (spoiler-safe GTA 6 only vs. all GTA) and the default action (hide vs. blur).
+1. ~~Decide the default mode and action~~ → **all GTA 6 content, hide** (decided 10 Nov).
 2. **Today:** write `docs/mute-guide.md` (keyword list + per-app mute paths) and publish it with
    GitHub Pages. This is the fastest real protection for phones.
 3. Create `rules/rules.json` + `rules/test-vectors.json` and the TypeScript matcher.
