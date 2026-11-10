@@ -6,6 +6,111 @@ YouTube, social media and the web, on **desktop (Windows / macOS / Linux / Chrom
 
 ---
 
+## 0. Research update (10 Nov 2026): what changed the plan
+
+### ⏰ Timing: launch is 9 days away
+- Rockstar's confirmed release date is **Thursday 19 Nov 2026** (PS5 / Xbox Series X|S), after
+  delays from fall 2025 and then 26 May 2026. Pre-loading reportedly starts around **12 Nov**.
+  No PC date has been announced; one outlet says 2027.
+- So the spoiler flood starts in about a week and peaks over launch week and the following weeks.
+  It will come back when the **PC version** launches (PC players will want to avoid spoilers for
+  months), so there's long-term demand as well as an urgent launch window.
+- **Effect on the plan:** see the revised roadmap in §8. Ship something useful *this week*
+  (a mute-words setup guide + a desktop extension MVP), then build the mobile apps.
+
+### 🏁 Competitors already exist (desktop only)
+| Extension | Store | What it does |
+|---|---|---|
+| GTA 6 Spoiler Blocker | Chrome | Hides spoilers on YouTube, Reddit, Google (very few users/reviews) |
+| Spoiler Shield for GTA 6 | Firefox | Blurs text, sentences and thumbnails; 38 built-in keywords you can extend |
+| GTA6 Flamingo Away Spoilers | Chrome | YouTube, Reddit, X, Google "& beyond" |
+| BlockTube (general) | Chrome/Firefox | Powerful keyword/channel filter for YouTube; the user writes their own rules |
+
+**What sets BlockGTA6 apart:** (1) real **mobile** coverage (Android native apps, iOS Safari
++ Screen Time + guided mute words), (2) YouTube filtering *before the page renders*, so nothing
+flashes on screen, (3) a carefully tuned keyword list with fewer false positives, and (4) one
+setting that applies on every device.
+
+### ⚖️ Licensing: don't copy BlockTube code
+BlockTube is **GPL-3.0**. Copying its code would make our extension GPL too. GPL is widely considered incompatible with App Store terms (VLC was pulled from the
+App Store in 2011 over exactly this), which is a problem for the iOS/macOS Safari build. **Use it only as a reference** (which
+endpoints and JSON object names matter, §3.1) and write our own implementation from scratch.
+
+### 🤖 Android: platform changes
+- **Android 17 Advanced Protection Mode** (opt-in) **revokes Accessibility access** from any
+  app that isn't flagged `isAccessibilityTool="true"`. Our blocker isn't an accessibility tool, so
+  it **won't work for users who turn on Advanced Protection**. Detect this and explain it in the app.
+- **Android 16** added `accessibilityDataSensitive` views, hidden from non-tool services.
+  Feed content in YouTube/TikTok isn't normally marked this way, but test on each OS version.
+- **Developer verification for sideloading:** from **30 Sep 2026**, certified devices in Brazil,
+  Indonesia, Singapore and Thailand only install apps from *verified* developers, and this goes
+  **global in 2027**. Unregistered APKs still install through ADB or a slow "advanced flow"
+  (restart + 24 h wait). → **Register as a verified developer** even for the GitHub/F-Droid
+  fallback build.
+- **Browser extensions on Android:** Firefox for Android supports full extensions.
+  **Edge for Android** now supports extensions, but only a **curated list (~20)**, so we can't
+  count on being listed. Chrome for Android still has no extensions.
+
+### 🍎 iOS: platform limits (stricter than first assumed)
+- **`NEFilterDataProvider` (content filter network extension) is effectively unavailable** for a
+  normal App Store app on an unmanaged iPhone. Apple DTS says it only works on supervised
+  devices, per-app on managed devices, or Screen Time **child** devices. → Moved to
+  "parental mode only" (§5).
+- **Screen Time web blocking has small limits:**
+  - `webContent.blockedByFilter = .specific(...)`: developers report 33 domains worked but
+    101 blocked nothing (iOS 18), and one report says `.specific` didn't apply in Safari on iOS 26
+    (it did in Chrome/Firefox).
+  - It also **turns off Safari Private Browsing**.
+  - `shield.webDomains` allows up to **50** domain tokens and gets a customisable shield screen.
+  → Keep the domain list **short (≤ 30 high-value domains)** and test on real devices with each
+  iOS version.
+- **Family Controls (Distribution) entitlement:** request it at
+  `developer.apple.com/contact/request/family-controls-distribution`. Reviewers judge whether the
+  app is a *self-control tool* or surveillance, so frame it clearly as self-use spoiler protection.
+  `requestAuthorization(for: .individual)` (iOS 16+) uses Face ID/Touch ID and **doesn't work
+  in the Simulator**, so test on a device.
+- **Orion browser (Kagi)** has *beta* support for Chrome/Firefox extensions on iPhone. This is a
+  second iOS browser where our extension might work. Test it, but treat it as a bonus.
+
+### 📱 Built-in mute features, checked
+| App | Path (may vary by version/region) | Notes |
+|---|---|---|
+| **TikTok** | Settings and privacy → Content preferences → **Filter video keywords** | Up to ~200 keywords; "Smart Keyword Filters" also catch similar wording; per-feed (For You / Following). TikTok says it *reduces* rather than removes |
+| **X** | Settings and privacy → Privacy and safety → Mute and block → **Muted words** | Home timeline and/or notifications; 24 h → forever. **May not cover search** |
+| **Threads** | Settings → (Privacy or Content preferences) → **Hidden Words** | Now separate from Instagram; bulk add; 30-day timers; covers feed, search, profiles, replies |
+| **Instagram** | Settings → Hidden Words | Mainly comments/DMs; limited effect on feed |
+| **Reddit** | **No native keyword mute found**; only "mute community" | The extension has to do keyword filtering on Reddit |
+| **YouTube** | "Not interested" / "Don't recommend channel"; pause watch/search history | No keyword mute |
+| **Phone notifications** | iOS: Settings → Notifications → Show Previews → *Never*; Android: lock-screen "hide sensitive content" | A notification title can spoil the story without opening the app |
+
+### 🔧 Technical findings
+- **Chrome Web Store** policy explicitly allows "fetching a remote configuration file … for
+  determining enabled features" as long as **all logic ships in the package**. Our
+  `rules.json`/`selectors.json` must stay *declarative* (keywords, CSS selectors, JSON paths),
+  never expressions that get evaluated.
+- **YouTube endpoints and objects worth filtering** (from studying BlockTube): `fetch` calls to
+  `/youtubei/v1/{browse,search,next,player,guide}`, plus the initial `ytInitialData` /
+  `ytInitialPlayerResponse` page globals. Item types: `lockupViewModel` (the current
+  home/related card), `shortsLockupViewModel`, `reelItemRenderer`, `videoRenderer`,
+  `compactVideoRenderer`, `gridVideoRenderer`, `richItemRenderer` (container to drop when empty),
+  `richShelfRenderer`/`shelfRenderer`, `postRenderer`/`backstagePostRenderer`,
+  `commentViewModel`/`commentEntityPayload`, `endScreenVideoRenderer`, `playlistPanelVideoRenderer`,
+  `liveChatTextMessageRenderer`, `chipCloudChipRenderer`.
+- **Thumbnail detection (Phase 5)** can start with *zero-shot* CLIP/MobileCLIP through
+  **Transformers.js v3**, no training needed. Prompts would be something like
+  "a screenshot of Grand Theft Auto VI" vs. other labels. It runs in an MV3 **offscreen document**
+  with `device: "webgpu"` (service workers can't use WebGPU) and falls back to WASM where WebGPU
+  is behind a flag (Firefox/Safari).
+- **Android in-app detection:** YouTube's view resource IDs change between app versions.
+  Use `uiautomator dump` / Accessibility Scanner to map them, keep them in remote
+  `selectors.json`, and prefer matching on *text* over IDs. Open-source reference:
+  `atick-faisal/Shorts-Blocker` (accessibility service + auto "back").
+- **Android notifications:** a `NotificationListenerService` can read incoming notifications and
+  `cancelNotification(key)` the matching ones (e.g. "New video: GTA 6 ending explained"). It
+  needs a separate user grant and should be checked against Play policy.
+
+---
+
 ## 1. The core problem: every platform allows a different kind of blocking
 
 No single technology works everywhere. The blocking you can do depends on the platform:
@@ -54,8 +159,14 @@ Web Store's no-remote-code rule and by App Store review.
       "gta 6", "gta6", "gta vi", "gtavi", "grand theft auto 6", "grand theft auto vi",
       "#gta6", "#gtavi", "gta 6 trailer", "gta6 leak"
     ],
+    "unique": [            // GTA 6-specific names, safe to block on their own
+      "jason duval", "lucia caminos", "port gellhorn", "grassrivers", "mount kalaga",
+      "leonida keys", "leonida", "boobie ike", "dre'quan priest", "real dimez",
+      "raul bautista", "brian heder", "cal hampton"
+    ],
     "contextual": [        // block only if a GTA/Rockstar term is also present
-      "leonida", "jason and lucia", "lucia", "vice city 2026", "rockstar trailer"
+      "vice city", "ambrosia", "jason and lucia", "lucia", "jason", "rockstar trailer",
+      "trailer 3", "ending", "final mission", "leak"
     ]
   },
   "regex": [
@@ -72,9 +183,11 @@ Web Store's no-remote-code rule and by App Store review.
 ### 2.2 Matching rules
 - Normalise text first: lowercase, Unicode NFKC, strip accents/zero-width characters,
   convert lookalike digits and letters (`6`/`VI`/`six`, `Ⅵ`), collapse whitespace and punctuation.
-- **Strong** terms block straight away. **Contextual** terms (character names, "Vice City",
-  "Leonida") block only next to a GTA/Rockstar term, because "Vice City" on its own is also the
-  2002 game and "Lucia" is a common name.
+- **Strong** and **unique** terms (e.g. "Jason Duval", "Port Gellhorn", "Grassrivers") block
+  straight away. **Contextual** terms block only next to a GTA/Rockstar term, because
+  "Vice City" on its own is also the 2002 game, "Ambrosia" is a common word and "Lucia" a common
+  name. Names come from Rockstar's May 2025 character/location reveal. Refresh the list
+  after launch, when many more names appear (shipping it as remote data makes that easy).
 - Modes the user can choose:
   - **Spoiler-safe** (default): GTA 6 only.
   - **All GTA**: also GTA 5/Online.
@@ -109,11 +222,14 @@ Tech: TypeScript + Vite (or WXT/Plasmo, which handle multi-browser builds), with
 Preact/Svelte options page.
 
 ### 3.1 How blocking works on a page
-1. **Data interception, before anything renders (YouTube).** The approach open-source
-   [BlockTube](https://github.com/amitbl/blocktube) uses: inject a main-world script that wraps
-   `fetch`/`XMLHttpRequest` and the `ytInitialData` / `ytInitialPlayerResponse` objects, then
-   removes matching video items from the JSON before YouTube renders them. Nothing flashes on
-   screen, and it's resistant to CSS class changes.
+1. **Data interception, before anything renders (YouTube).** The same idea as open-source
+   [BlockTube](https://github.com/amitbl/blocktube) (GPL-3.0, used as a reference only; see §0):
+   a main-world script (`"world": "MAIN"`, `run_at: document_start`) wraps `window.fetch` for
+   `/youtubei/v1/{browse,search,next,player,guide}` and traps the `ytInitialData` /
+   `ytInitialPlayerResponse` globals with property setters. It walks the JSON and removes
+   matching items (`lockupViewModel`, `videoRenderer`, `reelItemRenderer`, … full list in §0),
+   then drops `richItemRenderer`/shelf containers left empty. Nothing flashes on screen, and it's
+   resistant to CSS class changes.
 2. **DOM filtering (every site).** A `MutationObserver` scans new nodes (video cards, posts,
    tweets, search results, comments), pulls out the title, channel, hashtags and `alt`/`aria-label`
    text, runs the matcher, then hides or blurs the card.
@@ -175,13 +291,26 @@ so it's only a supplement.
 - Chrome Android has no extensions → the Accessibility Service covers Chrome as well
   (it reads the page through its accessibility tree).
 
-### 4.4 Play Store risk ⚠️
+### 4.4 Spoiler notifications
+`NotificationListenerService`: read each new notification's title and text, run the matcher,
+and `cancelNotification(key)` matching ones (YouTube "new upload", X/Reddit pushes, news apps).
+Keep a "hidden notifications" log in the app so the user can review them later.
+
+### 4.5 Compatibility checks
+- Detect **Advanced Protection Mode** (Android 17+). Accessibility will be revoked, so offer
+  the fallbacks instead: Firefox + extension, notification filter, and the mute-words checklist.
+- Keep YouTube/TikTok/Instagram view IDs in remote `selectors.json` (data only). Prefer text
+  matching, and re-map IDs with `uiautomator dump` whenever those apps update.
+
+### 4.6 Play Store risk ⚠️
 Google Play needs an **Accessibility API declaration** and a prominent in-app disclosure, and
 reviews these apps closely. Mitigations:
 - Process everything on the device, collect no data, and say exactly that in the disclosure
   and privacy policy.
 - Frame it as a user-chosen content filter (similar to existing digital-wellbeing blockers).
 - **Backup plan:** distribute the APK through GitHub Releases / F-Droid if Play rejects it.
+  **Register as a verified Android developer** anyway. From 2027, certified phones worldwide
+  block APKs from unverified developers (already enforced in BR/ID/SG/TH since 30 Sep 2026).
 
 ---
 
@@ -195,8 +324,10 @@ inside the YouTube, TikTok or Instagram apps.** The plan combines four layers:
    these sites in Safari.
 2. **Screen Time API (FamilyControls + ManagedSettings + DeviceActivity).**
    - Request `.individual` authorization (self-use, iOS 16+) or `.child` (parental use).
-   - `ManagedSettingsStore.webContent.blockedByFilter` blocks whole domains/URLs
-     (GTA 6 fan/leak sites) in **all** browsers and web views.
+   - `ManagedSettingsStore.shield.webDomains` (≤ 50 domains, customisable shield screen) and/or
+     `webContent.blockedByFilter` block whole GTA 6 fan/leak domains in browsers and web views.
+     Known problems (§0): small domain limits, a report that `.specific` didn't apply in Safari on
+     iOS 26, and Private Browsing gets turned off. Test both APIs on real devices and keep the list ≤ 30.
    - Optional **app shields**: the user can shield the YouTube/TikTok/X apps during
      "high-risk windows" (e.g. trailer drops, launch week) via `DeviceActivity` schedules, so
      they open those sites in filtered Safari instead.
@@ -207,14 +338,19 @@ inside the YouTube, TikTok or Instagram apps.** The plan combines four layers:
    that *do* work inside their own app. The app gives a checklist with one-tap "copy keywords"
    and deep links:
    - X: Muted words (with "from anyone", "forever")
-   - TikTok: Settings → Content preferences → Filter video keywords
-   - Instagram / Threads: Hidden words
+   - TikTok: Settings and privacy → Content preferences → Filter video keywords (with Smart Keyword Filters on)
+   - Threads: Hidden Words (now separate from Instagram; 30-day timer option)
+   - Instagram: Hidden Words
    - YouTube: "Don't recommend channel" for GTA 6 channels, plus clearing watch/search history
-   - Reddit: Mute communities
-   (Check each path in-app before release; menu names change.)
-4. **Optional content-filter Network Extension (`NEFilterDataProvider`).** Only on supervised
-   devices / Screen Time setups (Apple TN3134). It only sees hostnames and URLs, so it's a
-   later-phase extra.
+   - Reddit: Mute communities (r/GTA6 etc.); there's no native keyword mute
+   - iOS notifications: Show Previews → Never for YouTube/X/Reddit until you've finished the game
+   (See the table in §0. Check each path in-app before release; menu names change.)
+4. **Orion browser (bonus).** Its beta support for Chrome/Firefox extensions on iOS may let the
+   Chrome build of our extension run there too. Test it, and mention it if it works.
+5. **Parental mode only: content-filter Network Extension (`NEFilterDataProvider`).** Apple
+   only allows it on supervised devices, managed per-app setups, or Screen Time *child*
+   devices (TN3134 / Apple DTS). That's not possible for a normal self-use install, so it's
+   limited to a later "parent sets it up for a child" mode.
 
 Language: **Swift + SwiftUI**. One Xcode project builds the iOS app, the iOS Safari extension
 and the macOS app + macOS Safari extension.
@@ -260,10 +396,13 @@ BlockGTA6/
 
 ## 8. Roadmap
 
+**Revised for the 19 Nov launch (see §0).**
+
 | Phase | Deliverable | Platforms covered | Est. effort* |
 |---|---|---|---|
-| **0. Foundation** | `rules.json`, normaliser + matcher spec, test vectors, repo + CI | – | 2–3 days |
-| **1. MVP extension** | YouTube (interception + DOM), Google search, Reddit, X; popup/options; blur/hide | Chrome/Edge/Brave/Firefox desktop | 1–2 weeks |
+| **⚡ Launch sprint (10–19 Nov)** | (a) Publish a **"Spoiler-proof your phone in 5 minutes"** guide (GitHub Pages) with the copy-paste keyword list and the mute paths from §0. It works on iOS/Android **today** with zero code. (b) Ship a lean extension: matcher + YouTube JSON interception + Google/Reddit/X DOM adapters. Submit to Chrome and Firefox (AMO) by ~13 Nov to clear review before launch day. | Every phone (guide), desktop Chrome/Firefox, Firefox Android | ~1 week |
+| **0. Foundation** (done inside the sprint) | `rules.json`, normaliser + matcher spec, test vectors, repo + CI | – | 2–3 days |
+| **1. MVP extension** (hardening after launch) | Full YouTube coverage (Shorts, comments, end screens), blur-with-reveal, options page, remote rules updates | Chrome/Edge/Brave/Firefox desktop | 1–2 weeks |
 | **2. Extension everywhere** | TikTok, Instagram, Facebook, Twitch, generic adapter; remote rules/selectors update; Firefox Android; Safari macOS + iOS builds | + Firefox Android, Safari Mac/iPhone | 1–2 weeks |
 | **3. Android app** | Accessibility Service for YouTube/TikTok/Instagram/X/Reddit/Chrome; overlay shield; onboarding + disclosure; optional DNS VPN | Android native apps | 2–3 weeks |
 | **4. iOS app** | Host app for Safari ext; Screen Time domain blocking + app shields + schedules; muted-words checklist | iPhone/iPad native layer | 2–3 weeks (+ entitlement wait) |
@@ -271,6 +410,10 @@ BlockGTA6/
 
 \*One experienced developer. Store reviews (Chrome ~1–3 days, Apple ~1–2 days + Family
 Controls entitlement approval, Google Play Accessibility review) come on top.
+
+The Android and iOS apps can't realistically be approved before 19 Nov, but they're still
+worthwhile: the spoiler period lasts weeks after launch, and comes back for the **PC release**
+(not yet dated; one outlet says 2027).
 
 ---
 
@@ -301,12 +444,16 @@ Controls entitlement approval, Google Play Accessibility review) come on top.
 - Site redesigns can break adapters for a while. Remote selector updates keep that window short.
 - A determined user can uninstall the blocker; commitment mode only adds friction.
 
-## 12. Immediate next steps
+## 12. Immediate next steps (in order, starting 10 Nov)
 1. Decide the default mode (spoiler-safe GTA 6 only vs. all GTA) and the default action (hide vs. blur).
-2. Create `rules/rules.json` + `rules/test-vectors.json` and the TypeScript matcher (Phase 0).
-3. Scaffold the MV3 extension with a YouTube adapter and get it working in Chrome and Firefox (Phase 1).
-4. Apply for the Apple Developer Program + Family Controls entitlement and a Google Play developer
-   account now, since approvals take time.
+2. **Today:** write `docs/mute-guide.md` (keyword list + per-app mute paths) and publish it with
+   GitHub Pages. This is the fastest real protection for phones.
+3. Create `rules/rules.json` + `rules/test-vectors.json` and the TypeScript matcher.
+4. Build the MV3 extension: YouTube interception, then Google/Reddit/X adapters. Submit to the
+   Chrome Web Store and AMO by ~13 Nov.
+5. Start the developer accounts now, since approvals take time:
+   - Apple Developer Program + Family Controls (Distribution) entitlement request
+   - Google Play developer account + Android developer verification
 
 ---
 
@@ -319,3 +466,23 @@ Controls entitlement approval, Google Play Accessibility review) come on top.
 - Meet Safari Web Extensions on iOS (WWDC21 notes) — https://wwdcnotes.com/notes/wwdc21/10104
 - Google Play Accessibility API policy — https://support.google.com/googleplay/android-developer/answer/10964491
 - What AppBlock can block on Android (example of the Accessibility approach) — https://appblock.app/what-appblock-can-and-cannot-block-on-android/
+
+**Added in the 10 Nov 2026 research pass**
+- GTA 6 release date (19 Nov 2026) — https://www.thestatesman.com/entertainment/gta-6-release-date-when-is-grand-theft-auto-vi-coming-out-latest-updates-price-platforms-and-more-1503660757.html , https://www.gamepro.de/artikel/gta-6-release-live-ticker,3461296.html
+- GTA 6 characters & locations — https://www.gematsu.com/2025/05/grand-theft-auto-vi-second-trailer-characters-and-places-detailed , https://insider-gaming.com/?p=115287
+- Competitors — https://chromewebstore.google.com/detail/gta-6-spoiler-blocker/jeiicdjopelafmfokikmaimcfhdgamem , https://firefox.marketplace.browsertotal.com/en-CA/firefox/addon/spoiler-shield-for-gta-6/ , https://chromewebstore.google.com/detail/fjlphfamanblaepnmikmpmkcplnckipm
+- Spoiler-avoidance tips (notifications etc.) — https://www.itechguides.com/how-to-avoid-gta-6-spoilers-on-youtube-x-reddit-and-google/
+- Android 17 Advanced Protection vs. Accessibility — https://thehackernews.com/2026/03/android-17-blocks-non-accessibility.html , https://www.androidauthority.com/android-17-beta-2-advanced-protection-mode-accessibility-apps-3648860
+- Android developer verification — https://android-developers.googleblog.com/2026/06/android-developer-verification.html , https://www.helpnetsecurity.com/2026/06/19/android-developer-verification-rollout-markets/ , https://www.androidauthority.com/how-to-bypass-android-developer-verification-sideloading-rules-3718002/
+- Edge for Android extensions — https://www.androidauthority.com/microsoft-edge-extensions-android-3535402
+- Apple TN3134 / NEFilterDataProvider on consumer devices — https://developer.apple.com/documentation/technotes/tn3134-network-extension-provider-deployment.md , https://developer.apple.com/forums/thread/827228 , https://developer.apple.com/documentation/networkextension/nefiltermanager.md
+- Screen Time web-domain limits — https://developer.apple.com/forums/thread/730444 , https://developer.apple.com/forums/thread/805209 , https://developer.apple.com/forums/thread/729808 , https://developer.apple.com/documentation/managedsettings/shieldsettings/webdomains-swift.property.md
+- Family Controls authorization/entitlement — https://developer.apple.com/documentation/familycontrols/authorizationcenter/requestauthorization(for:).md , https://developer.apple.com/forums/thread/734199 , https://drobinin.com/consulting/screen-time-family-controls/building-with-screen-time-and-family-controls/
+- Orion iOS extensions — https://help.kagi.com/orion/browser-extensions/ios-ipados-extensions.html
+- TikTok keyword filters — https://newsroom.tiktok.com/more-ways-to-discover-new-content-and-creators-you-love , https://unil.ink/blog/how-to-block-hashtag-tiktok
+- Threads Hidden Words — https://9to5mac.com/2025/06/27/you-can-now-mute-words-just-on-threads-and-even-set-a-30-day-timer/
+- X muted words — https://www.blockpartyapp.com/blog/how-and-when-to-mute-keywords-on-x-formerly-twitter
+- Chrome Web Store remote-code / remote-config policy — https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements
+- Transformers.js WebGPU + CLIP in extensions — https://huggingface.co/docs/transformers.js/guides/webgpu , https://blog.mozilla.org/en/firefox/firefox-ai/running-inference-in-web-extensions/ , https://medium.com/@GenerationAI/transformers-js-onnx-runtime-webgpu-in-chrome-extension-13b563933ca9
+- Android Shorts blocker reference (Accessibility) — https://github.com/atick-faisal/Shorts-Blocker
+- NotificationListenerService — https://developer.android.com/reference/android/service/notification/NotificationListenerService
