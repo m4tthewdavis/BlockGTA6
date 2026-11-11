@@ -1,5 +1,5 @@
 {
-  "$comment": "BlockGTA6 shared rules. DATA ONLY - no executable code. Every client (extension, Android, iOS) loads this file and applies it with the algorithm described in rules/README.md. Scope: ALL GTA 6 / GTA VI content. Older GTA games (GTA 5, GTA Online, Vice City 2002) must NOT be blocked by default.",
+  "$comment": "Safehouse (repo: BlockGTA6) shared rules. DATA ONLY - no executable code. Every client (extension, Android, iOS) loads this file and applies it with the algorithm described in rules/README.md. Scope: ALL GTA 6 / GTA VI content. Older GTA games (GTA 5, GTA Online, Vice City 2002) must NOT be blocked by default.",
   "version": 2,
   "updated": "2026-11-11",
   "scope": "gta6",

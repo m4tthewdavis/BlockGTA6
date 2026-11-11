@@ -1,4 +1,6 @@
-# BlockGTA6 — Project Plan
+# Safehouse — Project Plan
+
+*Repo: `BlockGTA6`. Product name: **Safehouse**, "Your safehouse from spoilers."*
 
 Goal: one product that hides GTA 6 content (trailers, leaks, spoilers, news, memes) across
 YouTube, social media and the web, on **desktop (Windows / macOS / Linux / ChromeOS)**,
@@ -16,10 +18,10 @@ YouTube, social media and the web, on **desktop (Windows / macOS / Linux / Chrom
   or asks for proof of rights (5.2.1).
 - App stores are also full of **fake "GTA 6" phone apps used for scams**, so reviewers and users
   are wary of anything called "GTA 6 …".
-- → **Recommendation:** publish under a neutral brand (e.g. "Spoiler Shield", "NoSpoil", "Hype
-  Shield"). Only *describe* it as "blocks GTA 6 / GTA VI content" in the description (nominative
-  use), with a "not affiliated with Rockstar/Take-Two" line and no Rockstar logos or art. The GitHub
-  repo can stay `BlockGTA6`. **Choose the brand name before submitting to any store.**
+- → **Decided (11 Nov): the product is called _Safehouse_** (tagline: *"Your safehouse from
+  spoilers."*). It's a nod to GTA's safehouses, but "safehouse" is an ordinary English word, and
+  I found no existing blocker app or extension with that name. See §0c for brand rules. The
+  GitHub repo stays `BlockGTA6`.
 
 ### 📱 Still no dedicated GTA 6 blocker on phones
 I searched the App Store, Play Store and spoiler guides and found none. Guides recommend Shut Up
@@ -91,6 +93,25 @@ apps are the real gap in the market.
 
 ---
 
+## 0c. Brand: Safehouse
+
+| Where | Name to use |
+|---|---|
+| App Store / Google Play | **Safehouse: Spoiler Blocker** (a bare "Safehouse" is probably taken by other apps; names must be unique) |
+| Chrome Web Store / Firefox Add-ons / Edge | **Safehouse – Spoiler Blocker** |
+| Subtitle / short description | "Hide game hype, leaks & spoilers everywhere". **No "GTA" in the name or subtitle** |
+| Long description | May say *"Blocks GTA 6 / GTA VI content on YouTube, TikTok, X, Reddit…"* (descriptive use) + *"Not affiliated with Rockstar Games or Take-Two Interactive."* |
+| Block screen copy | "You're in the Safehouse. This content is hidden." with a "Show anyway" button |
+
+**Visual rules:** an original icon (e.g. a simple house with closed shutters, or a door with a
+light on). **Don't** use: the Pricedown font, the GTA VI pink/orange/teal sunset palette,
+GTA-style wanted stars, "WASTED"/"BUSTED" screens, or any Rockstar art, logos or screenshots.
+**Avoid in any name or marketing:** "GTA", "Grand Theft Auto", "Rockstar", "Vice City",
+"Leonida". Take-Two filed 16 US trademark applications for Vice City-related names (including
+"Vice City Leonida") on 28 Oct 2026, and is opposing a "Vice City Subs" trademark.
+
+---
+
 ## 0. Research update (10 Nov 2026): what changed the plan
 
 ### ⏰ Timing: launch is 9 days away
@@ -111,7 +132,7 @@ apps are the real gap in the market.
 | GTA6 Flamingo Away Spoilers | Chrome | YouTube, Reddit, X, Google "& beyond" |
 | BlockTube (general) | Chrome/Firefox | Powerful keyword/channel filter for YouTube; the user writes their own rules |
 
-**What sets BlockGTA6 apart:** (1) real **mobile** coverage (Android native apps, iOS Safari
+**What sets Safehouse apart:** (1) real **mobile** coverage (Android native apps, iOS Safari
 + Screen Time + guided mute words), (2) YouTube filtering *before the page renders*, so nothing
 flashes on screen, (3) a carefully tuned keyword list with fewer false positives, and (4) one
 setting that applies on every device.
@@ -321,7 +342,7 @@ Preact/Svelte options page.
    text, runs the matcher, then hides or blurs the card.
    Per-site "adapters" say what counts as a card on each site.
 3. **Network rules (`declarativeNetRequest`).** Redirect whole pages (e.g. `reddit.com/r/GTA6`,
-   `rockstargames.com/VI`) to a friendly "Blocked by BlockGTA6" page.
+   `rockstargames.com/VI`) to a friendly "You're in the Safehouse" block page.
 4. **Watch-page guard.** If the user opens a YouTube/TikTok/X link straight to a GTA 6 video,
    pause the player and show the full-page shield.
 
@@ -375,7 +396,7 @@ A `VpnService` that only answers DNS (no traffic inspection), blocking domains t
 so it's only a supplement.
 
 ### 4.3 Browsers on Android
-- Firefox for Android → install the BlockGTA6 extension (best experience).
+- Firefox for Android → install the Safehouse extension (best experience).
 - Chrome Android has no extensions → the Accessibility Service covers Chrome as well
   (it reads the page through its accessibility tree).
 
@@ -580,6 +601,7 @@ worthwhile: the spoiler period lasts weeks after launch, and comes back for the 
 - Character names incl. Extended Look — https://timesaver.gg/blog/gta-6-characters-jason-lucia-confirmed-2026 , https://rockstarreport.com/features/gta-6-characters-confirmed-rumoured-so-far
 - No mobile GTA 6 blocker; scam apps — https://www.gtaboom.com/how-to-avoid-gta-6-spoilers-online/ , https://nordvpn.com/fi/blog/gta-malware-and-scams/ , https://khelnow.com/gaming/gta-6-spoiler-protection-guide-mute-these-keywords-202611
 - Take-Two trademark/IP actions — https://www.gamesradar.com/gta-parent-company-take-two-reportedly-went-after-it-takes-twos-trademark , https://www.techdirt.com/company/ebrand/ , https://www.generationamiga.com/2025/12/27/take-twos-dmca-hammer-falls-on-fan-made-gta-browser-revival/
+- Take-Two "Vice City"/"Leonida" trademark filings — https://www.talkesport.com/news/take-two-vice-city-trademarks-gta-6/ , https://secureyourtrademark.com/blog/take-two-blocks-vice-city-subs/
 - App Store trademark-in-name rejections — https://themoviedb.org/talk/64a5918b158c8500ffba86ef , https://developer.apple.com/forums/thread/84709 , https://developer.apple.com/forums/thread/131914
 - iOS 26 URL Filter — https://developer.apple.com/documentation/networkextension/url-filters.md , https://developer.apple.com/documentation/networkextension/filtering-traffic-by-url.md , https://textslashplain.com/2025/06/10/apple-url-filter-api/ , https://developer.apple.com/forums/thread/809913 , https://developer.apple.com/forums/thread/840630
 - Firefox 128 MAIN world — https://blog.mozilla.org/addons/2024/07/10/manifest-v3-updates-landed-in-firefox-128/

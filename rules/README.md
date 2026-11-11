@@ -1,6 +1,6 @@
 # Shared rules
 
-`rules.json` is the one blocklist every BlockGTA6 client uses: the browser extension
+`rules.json` is the one blocklist every Safehouse client uses: the browser extension
 (TypeScript), the Android app (Kotlin) and the iOS app (Swift). It is **data only**, so it can be
 updated remotely without breaking Chrome Web Store or App Store rules.
 

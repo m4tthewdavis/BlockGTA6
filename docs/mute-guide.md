@@ -1,4 +1,6 @@
-# Block GTA 6 on your phone in 5 minutes
+# Safehouse: block GTA 6 on your phone in 5 minutes
+
+*Your safehouse from spoilers.*
 
 GTA 6 comes out on **19 November 2026**. These steps use each app's **own built-in filters**.
 You don't need to install anything, and they work on **iPhone and Android** right now.
@@ -105,13 +107,13 @@ If you follow gaming accounts that will post about GTA 6, mute them for a while
    Turn off). If you don't have much existing history, YouTube shows a **blank Home feed** and
    removes "Up next" recommendations. Your Subscriptions tab still works. If your Home feed still
    shows videos after turning it off, also delete your past watch history.
-5. For full keyword blocking, watch YouTube in a browser with the BlockGTA6 extension (coming soon).
+5. For full keyword blocking, watch YouTube in a browser with the Safehouse extension (coming soon).
 
 ## 7. Reddit
 Reddit has **no keyword mute**. Instead:
 - Leave and **mute** the GTA 6 communities: open **r/GTA6** and **r/GTAVI** → **⋯ → Mute community**.
 - Consider muting general gaming-news and leak communities until you've played.
-- Full keyword filtering on Reddit is coming with the BlockGTA6 extension.
+- Full keyword filtering on Reddit is coming with the Safehouse extension.
 
 ## 8. Google app / Discover feed
 On any GTA 6 card: **⋮ → Not interested in "Grand Theft Auto VI"** (or "Don't show content from this site").
@@ -131,7 +133,7 @@ access are scams that steal accounts or install malware. Don't install them.
 
 ---
 
-### Coming soon from BlockGTA6
+### Coming soon from Safehouse
 - **Browser extension** (Chrome, Edge, Brave, Firefox, including Firefox for Android): hides GTA 6
   videos, posts and search results automatically on YouTube, Google, Reddit and X.
 - **Android app:** filters inside the YouTube, TikTok, Instagram, X and Reddit apps, and hides

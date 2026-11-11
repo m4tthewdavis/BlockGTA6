@@ -1,14 +1,15 @@
-# BlockGTA6
+# Safehouse 🏠
 
-A cross-platform blocker that hides **all GTA 6 / GTA VI content** (trailers, leaks, news,
-memes, spoilers) on YouTube, social media and the web. It works on desktop browsers, Android and iOS.
+**Your safehouse from spoilers.** Safehouse hides **all GTA 6 / GTA VI content** (trailers, leaks, news, memes,
+spoilers) on YouTube, social media and the web. It works on desktop browsers, Android and iOS.
 Older GTA games (GTA 5, GTA Online, Vice City 2002) are left alone.
 
 - 📱 **Need it right now?** [Block GTA 6 on your phone in 5 minutes](docs/mute-guide.md), using
   each app's built-in mute settings.
-- 🗺️ [PLAN.md](PLAN.md): architecture, per-platform approach, research and roadmap.
+- 🗺️ [PLAN.md](PLAN.md): architecture, per-platform approach, research, brand rules and roadmap.
 - 📋 [rules/](rules/): the shared blocklist (`rules.json`), the matching algorithm and test vectors.
 
 **Status:** the plan, shared rules and mute guide are done. The browser extension is next.
 
-*Not affiliated with Rockstar Games or Take-Two Interactive.*
+*Safehouse is an independent project, not affiliated with, endorsed by or connected to Rockstar
+Games or Take-Two Interactive. "GTA" and "Grand Theft Auto" are trademarks of Take-Two Interactive.*
