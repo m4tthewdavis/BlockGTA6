@@ -41,3 +41,11 @@ Older games (GTA 5, GTA Online, GTA Vice City from 2002) are **not** blocked.
 `test-vectors.json` lists inputs and their expected verdicts. Every client's matcher must pass
 all of them in CI. When you change `rules.json`, add test cases for the change, especially
 **allow** cases, so older GTA content stays visible.
+
+## Websites (`domains`)
+
+- `hostRegex`: a top-level page load whose **host** matches is blocked (e.g. `gta6library.com`,
+  `www.gta-vi.net`), but not `gta-vicecity.com`. It's RE2-compatible, so Chrome/Firefox
+  `declarativeNetRequest` can use it directly.
+- `urlPrefixes`: `host/path` prefixes. Any subdomain and either http/https match, case-insensitive.
+  These redirect to the Safehouse block page, which has a "Show anyway" button.

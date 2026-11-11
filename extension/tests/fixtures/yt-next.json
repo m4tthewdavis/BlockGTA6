@@ -1,0 +1,13 @@
+{
+  "contents": { "twoColumnWatchNextResults": { "secondaryResults": { "secondaryResults": { "results": [
+    { "lockupViewModel": { "contentId": "n1", "metadata": { "lockupMetadataViewModel": { "title": { "content": "GTA VI map leak compared" } } } } },
+    { "compactVideoRenderer": { "videoId": "n2", "title": { "simpleText": "Lo-fi beats to study to" } } }
+  ] } } } },
+  "playerOverlays": { "playerOverlayRenderer": {
+    "autoplay": { "playerOverlayAutoplayRenderer": { "videoTitle": { "simpleText": "GTA 6 ending explained" } } },
+    "endScreen": { "watchNextEndScreenRenderer": { "results": [
+      { "endScreenVideoRenderer": { "videoId": "e1", "title": { "simpleText": "Port Gellhorn full tour" } } },
+      { "endScreenVideoRenderer": { "videoId": "e2", "title": { "simpleText": "Bread baking basics" } } }
+    ] } }
+  } }
+}

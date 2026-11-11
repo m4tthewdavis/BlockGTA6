@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Safehouse</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { width: 320px; padding: 16px; display: grid; gap: 12px; }
+    .count { font-size: 28px; font-weight: 700; }
+    .row { display: flex; gap: 8px; }
+    .row .btn { flex: 1; }
+    .off .count, .off #siteLine { opacity: .5; }
+  </style>
+</head>
+<body>
+  <header class="brand">
+    <img src="icons/icon-48.png" alt="">
+    <div>
+      <div class="name">Safehouse</div>
+      <div class="tag">Your safehouse from spoilers</div>
+    </div>
+  </header>
+
+  <section class="card">
+    <label class="switch">
+      <span class="label"><strong>Protection</strong><span class="hint" id="stateHint">On everywhere</span></span>
+      <input type="checkbox" id="enabled" role="switch">
+    </label>
+  </section>
+
+  <section class="card" id="siteCard">
+    <div id="siteLine" class="muted small">Checking this page…</div>
+    <div class="count" id="count" hidden>0</div>
+    <label class="switch" id="siteSwitch" hidden>
+      <span class="label"><span id="siteLabel">Protect this site</span></span>
+      <input type="checkbox" id="siteEnabled" role="switch">
+    </label>
+  </section>
+
+  <div class="row">
+    <button class="btn" id="openOptions" type="button">Settings</button>
+    <a class="btn" href="phone.html" target="_blank">Phone guide</a>
+  </div>
+  <p class="muted small" style="margin:0">Hides GTA 6 / GTA VI content. Older GTA games stay visible unless you turn on “All GTA” in Settings.</p>
+  <script src="popup.js"></script>
+</body>
+</html>

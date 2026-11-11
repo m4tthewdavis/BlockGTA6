@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><title>YouTube</title></head>
+<body>
+<!-- Simulates YouTube: data arrives as ytInitialData and via fetch('/youtubei/v1/...'); a tiny "app" renders it. -->
+<div id="raw-home"></div>
+<div id="raw-search"></div>
+<ytd-comment-thread-renderer id="thread-gta">
+  <ytd-comment-view-model><span id="content-text">Lucia Caminos dies at the end, sorry</span></ytd-comment-view-model>
+</ytd-comment-thread-renderer>
+<ytd-comment-thread-renderer id="thread-ok">
+  <ytd-comment-view-model><span id="content-text">Great recipe, thanks!</span></ytd-comment-view-model>
+</ytd-comment-thread-renderer>
+<script>var ytInitialData = __YT_HOME__;</script>
+<script>
+  // Collect every visible title in the JSON (videos, shorts, chips, channels).
+  function titles(data) {
+    const out = [];
+    (function walk(n) {
+      if (!n || typeof n !== 'object') return;
+      if (Array.isArray(n)) return n.forEach(walk);
+      for (const [k, v] of Object.entries(n)) {
+        if ((k === 'content' || k === 'text' || k === 'simpleText') && typeof v === 'string') out.push(v);
+        else walk(v);
+      }
+    })(data);
+    return out;
+  }
+  function render(el, data) {
+    for (const t of titles(data)) {
+      const d = document.createElement('div');
+      d.className = 'raw-item';
+      d.textContent = t;
+      el.appendChild(d);
+    }
+  }
+  render(document.getElementById('raw-home'), window.ytInitialData);
+  fetch('/youtubei/v1/search?prettyPrint=false', { method: 'POST', body: '{}' })
+    .then((r) => r.json())
+    .then((d) => { render(document.getElementById('raw-search'), d); document.body.dataset.searchLoaded = '1'; });
+  // A DOM-only card added later (no JSON involved) to exercise the DOM layer.
+  setTimeout(() => {
+    const card = document.createElement('ytd-rich-item-renderer');
+    card.id = 'late-card';
+    card.textContent = 'Leaked GTA VI gameplay (late)';
+    document.body.appendChild(card);
+  }, 300);
+</script>
+</body></html>

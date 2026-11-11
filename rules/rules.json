@@ -199,23 +199,14 @@
     ]
   },
   "domains": {
-    "hostContains": [
-      "gta6",
-      "gta-6",
-      "gta-vi",
-      "grandtheftauto6",
-      "grandtheftautovi"
-    ],
+    "$comment": "hostRegex is RE2-compatible (no lookarounds) and is applied to the full URL of top-level page loads. It must only look at the host part.",
+    "hostRegex": "^https?://[^/?#]*(gta-?6[^0-9/?#]|gta-?vi[^a-z0-9/?#]|grandtheftauto-?6[^0-9/?#]|grandtheftauto-?vi[^a-z0-9/?#])",
     "urlPrefixes": [
       "rockstargames.com/VI",
-      "www.rockstargames.com/VI",
       "reddit.com/r/GTA6",
-      "www.reddit.com/r/GTA6",
-      "old.reddit.com/r/GTA6",
-      "reddit.com/r/GTAVI",
-      "www.reddit.com/r/GTAVI",
-      "old.reddit.com/r/GTAVI"
-    ]
+      "reddit.com/r/GTAVI"
+    ],
+    "$urlPrefixesComment": "Host + path prefix; any subdomain (www., old., new.) and either scheme matches. Case-insensitive."
   },
   "allowlist": []
 }

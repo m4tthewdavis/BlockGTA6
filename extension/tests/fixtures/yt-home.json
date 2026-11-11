@@ -1,0 +1,30 @@
+{
+  "header": {
+    "chipCloudRenderer": {
+      "chips": [
+        { "chipCloudChipRenderer": { "text": { "simpleText": "Grand Theft Auto VI" } } },
+        { "chipCloudChipRenderer": { "text": { "simpleText": "Music" } } }
+      ]
+    }
+  },
+  "contents": {
+    "twoColumnBrowseResultsRenderer": {
+      "tabs": [{ "tabRenderer": { "content": { "richGridRenderer": { "contents": [
+        { "richItemRenderer": { "content": { "lockupViewModel": { "contentId": "home1", "metadata": { "lockupMetadataViewModel": {
+          "title": { "content": "GTA 6 Launch Trailer Breakdown" },
+          "metadata": { "contentMetadataViewModel": { "metadataRows": [{ "metadataParts": [{ "text": { "content": "Gaming News" } }] }] } } } } } } } },
+        { "richItemRenderer": { "content": { "lockupViewModel": { "contentId": "home2", "metadata": { "lockupMetadataViewModel": {
+          "title": { "content": "Best pasta recipe" } } } } } } },
+        { "richSectionRenderer": { "content": { "richShelfRenderer": { "title": { "runs": [{ "text": "Shorts" }] }, "contents": [
+          { "richItemRenderer": { "content": { "shortsLockupViewModel": { "entityId": "short1", "overlayMetadata": { "primaryText": { "content": "Lucia Caminos edit #gta6" } } } } } },
+          { "richItemRenderer": { "content": { "shortsLockupViewModel": { "entityId": "short2", "overlayMetadata": { "primaryText": { "content": "Cat jumps into a box" } } } } } }
+        ] } } } },
+        { "richItemRenderer": { "content": { "videoRenderer": { "videoId": "home3", "title": { "runs": [{ "text": "GTA 5 story mode 100%" }] } } } } },
+        { "richItemRenderer": { "content": { "lockupViewModel": { "contentId": "home4", "metadata": { "lockupMetadataViewModel": {
+          "title": { "content": "My honest review" },
+          "metadata": { "contentMetadataViewModel": { "metadataRows": [{ "metadataParts": [{ "text": { "content": "GTA6 Leaks Channel" } }] }] } } } } } } } },
+        { "continuationItemRenderer": { "trigger": "CONTINUATION_TRIGGER_ON_ITEM_SHOWN" } }
+      ] } } } }]
+    }
+  }
+}

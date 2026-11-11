@@ -1,0 +1,14 @@
+{
+  "contents": { "twoColumnSearchResultsRenderer": { "primaryContents": { "sectionListRenderer": { "contents": [
+    { "itemSectionRenderer": { "contents": [
+      { "videoRenderer": { "videoId": "s1", "title": { "runs": [{ "text": "Every Leonida location ranked" }] } } },
+      { "videoRenderer": { "videoId": "s2", "title": { "runs": [{ "text": "Minecraft speedrun world record" }] } } },
+      { "reelShelfRenderer": { "title": { "simpleText": "Shorts" }, "items": [
+        { "reelItemRenderer": { "videoId": "s3", "headline": { "simpleText": "Jason Duval moments" } } },
+        { "reelItemRenderer": { "videoId": "s4", "headline": { "simpleText": "Dog learns to skate" } } }
+      ] } },
+      { "channelRenderer": { "channelId": "s5", "title": { "simpleText": "GTA VI News Daily" } } },
+      { "videoRenderer": { "videoId": "s6", "title": { "runs": [{ "text": "GTA Vice City Definitive Edition review" }] } } }
+    ] } }
+  ] } } } }
+}

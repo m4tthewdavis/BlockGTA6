@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Safehouse settings</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { padding: 24px 16px 64px; }
+    main { max-width: 680px; margin: 0 auto; display: grid; gap: 16px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .brand img { width: 48px; height: 48px; }
+    .brand .name { font-size: 22px; }
+    h2 { font-size: 15px; margin-bottom: 8px; }
+    .card > p { margin: 0 0 8px; }
+    #saved { font-size: 12px; color: var(--ok); opacity: 0; transition: opacity .2s; }
+    #saved.show { opacity: 1; }
+    .sites { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); column-gap: 24px; }
+    .result { margin-top: 8px; font-weight: 600; min-height: 1.5em; }
+    .result.block { color: var(--danger); }
+    .result.allow { color: var(--ok); }
+    .welcome { border-color: var(--accent); }
+    .welcome[hidden] { display: none; }
+    footer { color: var(--muted); font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <img src="icons/icon-128.png" alt="">
+      <div>
+        <div class="name">Safehouse</div>
+        <div class="tag">Your safehouse from spoilers</div>
+      </div>
+    </div>
+    <span id="saved" role="status" aria-live="polite">Saved</span>
+  </header>
+
+  <section class="card welcome" id="welcome" hidden>
+    <h2>You're all set 🏠</h2>
+    <p>Safehouse is now hiding GTA 6 / GTA VI videos, posts and search results on YouTube, Google, Bing, DuckDuckGo, Reddit and X. Older GTA games stay visible.</p>
+    <p class="muted small">Tip: phone apps need their own built-in mute settings. <a href="phone.html" target="_blank">Open the 5-minute phone guide</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>Protection</h2>
+    <label class="switch">
+      <span class="label"><strong>Protection on</strong><span class="hint">Master switch for everything below.</span></span>
+      <input type="checkbox" id="enabled" role="switch">
+    </label>
+    <div class="switch" style="cursor:default">
+      <span class="label"><strong>When something matches</strong><span class="hint">Hide it completely, or blur it so you can click to reveal.</span></span>
+      <span class="seg" role="radiogroup" aria-label="Action">
+        <label><input type="radio" name="action" value="hide">Hide</label>
+        <label><input type="radio" name="action" value="blur">Blur</label>
+      </span>
+    </div>
+    <label class="switch">
+      <span class="label"><strong>Cover GTA 6 pages</strong><span class="hint">If you open a GTA 6 video, post or tweet directly, cover the page and pause the video.</span></span>
+      <input type="checkbox" id="pageShield" role="switch">
+    </label>
+    <label class="switch">
+      <span class="label"><strong>Block GTA 6 websites</strong><span class="hint">Fan sites, r/GTA6 and Rockstar's GTA VI page.</span></span>
+      <input type="checkbox" id="blockSites" role="switch">
+    </label>
+    <label class="switch">
+      <span class="label"><strong>All GTA</strong><span class="hint">Also hide older games (GTA 5, GTA Online, Vice City…). Off by default.</span></span>
+      <input type="checkbox" id="includeOlderGta" role="switch">
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>Sites</h2>
+    <div class="sites" id="sites"></div>
+  </section>
+
+  <section class="card">
+    <h2>Your own keywords</h2>
+    <p class="muted small">One per line. Anything containing these is hidden too (e.g. a streamer's name, a mission name).</p>
+    <textarea id="customKeywords" spellcheck="false" aria-label="Your own keywords"></textarea>
+  </section>
+
+  <section class="card">
+    <h2>Never hide</h2>
+    <p class="muted small">One per line. Anything containing these is always shown, even if it mentions GTA 6.</p>
+    <textarea id="allowlist" spellcheck="false" aria-label="Never hide"></textarea>
+  </section>
+
+  <section class="card">
+    <h2>Test a title</h2>
+    <p class="muted small">Type a video title or post to see whether Safehouse would hide it.</p>
+    <input type="text" id="tester" placeholder="e.g. GTA VI map leak compared" aria-label="Title to test">
+    <div class="result" id="testResult" aria-live="polite"></div>
+  </section>
+
+  <footer>
+    Safehouse is an independent project, not affiliated with, endorsed by or connected to Rockstar Games or Take-Two Interactive.
+    Everything runs on your device. Nothing you browse is sent anywhere.
+  </footer>
+</main>
+<script src="options.js"></script>
+</body>
+</html>

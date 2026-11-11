@@ -558,7 +558,7 @@ worthwhile: the spoiler period lasts weeks after launch, and comes back for the 
 2. **Today:** write `docs/mute-guide.md` (keyword list + per-app mute paths) and publish it with
    GitHub Pages. This is the fastest real protection for phones.
 3. Create `rules/rules.json` + `rules/test-vectors.json` and the TypeScript matcher.
-4. Build the MV3 extension: YouTube interception, then Google/Reddit/X adapters. Submit to the
+4. ✅ **Built (11 Nov): `extension/` v0.1.0.** YouTube data filtering + page scanner for YouTube/Google/Bing/DDG/Reddit/X, page shield, website blocking, popup/options/phone guide. 76 unit tests and 16 end-to-end checks pass on offline page copies. **Remaining:** check it against the live sites, then submit to the Chrome Web Store and AMO.
    Chrome Web Store and AMO by ~13 Nov.
 5. Start the developer accounts now, since approvals take time:
    - Apple Developer Program + Family Controls (Distribution) entitlement request
