@@ -38,6 +38,18 @@ Mount Kalaga
 Leonida Keys
 ```
 
+**More names from the trailers (optional):**
+
+```
+Petra Navarro
+Lori Heder
+Brian Heder
+Cal Hampton
+Boobie Ike
+Real Dimez
+DWNPLY
+```
+
 **Optional.** These are stricter, but they may also hide posts about the 2002 Vice City or other Rockstar games:
 
 ```
@@ -72,10 +84,16 @@ once you've played the game.
 - Threads can give filters a 30-day timer. Make sure yours are set *not* to expire (or renew them).
 
 ## 5. Instagram
-**Profile → ☰ → Settings → Hidden Words → Manage custom words and phrases**
+Instagram has two separate filters. Use both:
 
-- This mostly hides **comments and messages**. For Reels and the feed, press and hold any GTA 6
-  post → **Not interested**, and do this a few times so the algorithm learns.
+1. **Suggested posts and Reels:** on any GTA 6 post tap **⋯ → Not interested → Don't suggest posts
+   with certain words**, then add the words from step 1. (You can also find it under Settings →
+   **Content preferences**.) This only affects *recommended* content, not accounts you follow.
+2. **Comments and messages:** **Settings → Hidden Words → Manage custom words and phrases**, and
+   add the same words.
+
+If you follow gaming accounts that will post about GTA 6, mute them for a while
+(profile → Following → Mute).
 
 ## 6. YouTube (no keyword mute, so use these instead)
 1. On every GTA 6 video you see: **⋮ → Not interested** *and* **⋮ → Don't recommend channel**
@@ -84,7 +102,9 @@ once you've played the game.
    unsubscribe until you've played.
 3. Delete any GTA 6 searches from **search history** (Settings → Manage all history).
 4. **Strongest option:** turn **watch history off** (You → Settings → Manage all history →
-   Turn off). YouTube then stops filling the Home feed with recommendations. Subscriptions still work.
+   Turn off). If you don't have much existing history, YouTube shows a **blank Home feed** and
+   removes "Up next" recommendations. Your Subscriptions tab still works. If your Home feed still
+   shows videos after turning it off, also delete your past watch history.
 5. For full keyword blocking, watch YouTube in a browser with the BlockGTA6 extension (coming soon).
 
 ## 7. Reddit
@@ -102,6 +122,12 @@ A notification title ("New video: GTA 6 ending explained…") can spoil things w
   YouTube, X, Reddit and news apps for a while.
 - **Android:** Settings → Notifications → Lock screen → **Don't show sensitive content**
   (wording varies by phone), and silence YouTube/X/Reddit/news apps for a while.
+
+---
+
+## 10. ⚠️ Watch out for scams
+There is **no GTA 6 phone app**. Apps or downloads promising "GTA 6 Beta", "GTA 6 Mobile" or early
+access are scams that steal accounts or install malware. Don't install them.
 
 ---
 

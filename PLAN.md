@@ -6,6 +6,91 @@ YouTube, social media and the web, on **desktop (Windows / macOS / Linux / Chrom
 
 ---
 
+## 0b. Research update #2 (11 Nov 2026)
+
+### 🏷️ Naming and trademark risk: keep "GTA" out of the store *name*
+- Take-Two is aggressive about intellectual property. It has filed trademark claims against names
+  containing "rockstar" and against Hazelight's "It Takes Two", and sent DMCA takedowns for GTA
+  fan projects.
+- Apple rejects apps with a trademarked term or popular app name in the app name (guideline 2.3.7)
+  or asks for proof of rights (5.2.1).
+- App stores are also full of **fake "GTA 6" phone apps used for scams**, so reviewers and users
+  are wary of anything called "GTA 6 …".
+- → **Recommendation:** publish under a neutral brand (e.g. "Spoiler Shield", "NoSpoil", "Hype
+  Shield"). Only *describe* it as "blocks GTA 6 / GTA VI content" in the description (nominative
+  use), with a "not affiliated with Rockstar/Take-Two" line and no Rockstar logos or art. The GitHub
+  repo can stay `BlockGTA6`. **Choose the brand name before submitting to any store.**
+
+### 📱 Still no dedicated GTA 6 blocker on phones
+I searched the App Store, Play Store and spoiler guides and found none. Guides recommend Shut Up
+(a comment blocker) on iOS, Firefox add-ons on Android, and muting keywords manually. The mobile
+apps are the real gap in the market.
+
+### 🎬 Latest marketing beats (added to the keyword list)
+- **Extended Look** premiered on Netflix on 27 Aug 2026. **Launch trailer** on 15 Oct 2026
+  (Jason's military past, Lucia's ankle tag, song "Flower in a Hurricane" by Justice).
+- More officially named characters: Lori Heder, DWNPLY, Bae-Luxe & Roxy (Real Dimez),
+  Petra Navarro, Andrés de León, plus first names (Stefanie, Raymond, Ernesto, Mendez, Val) that
+  are too common to block on their own.
+- After 19 Nov, expect a flood of new mission, character and place names. Plan a **rules refresh
+  in launch week** (remote `rules.json` update).
+
+### 🍎 iOS 26 URL Filter API (`NEURLFilterManager`): new option, with limits
+- New in iOS 26. Apple describes it as working for *consumer and managed* deployments.
+  Apple DTS points developers to it instead of `NEFilterDataProvider`. But a Sept 2025 Apple
+  deployment doc reportedly says "requires supervision", so this is unresolved. **Ask Apple DTS
+  before investing.**
+- How it works: a Bloom filter on the device, then a lookup on **our own PIR server** (Private
+  Information Retrieval, through Apple's Oblivious HTTP relay + Privacy Pass), so we never see
+  which URLs the user visits. Applies to Safari/WebKit/URLSession traffic. Other browsers have to
+  opt in.
+- **Exact URLs only: no wildcards, no regex, no keywords.** Useful for blocking a fixed list
+  (Rockstar's `/VI` page, r/GTA6, known leak pages) across Safari *and* in-app web views. Useless
+  for keyword filtering inside YouTube. Needs its own entitlement approval, and one developer
+  reports it broke on iOS 26.5.2.
+- → Added as an **optional Phase 5 item** (it needs a PIR server to run and maintain).
+
+### 🧩 Extension engineering facts
+- **`world: "MAIN"` content scripts** (needed for YouTube JSON interception):
+  - Chrome MV3: ✅
+  - Firefox: ✅ since **Firefox 128** (scripts in this world have no extension-API access, so
+    talk to them via `postMessage`)
+  - Safari: works through `scripting.registerContentScripts({ world: "MAIN" })` (reported since
+    16.4); static manifest support is unclear (maybe Safari 18). → On Safari, **register the MAIN
+    script dynamically**.
+- **YouTube enforces Trusted Types** (`require-trusted-types-for 'script'`). Assigning a string
+  to `innerHTML` throws, and a WebKit bug applies this to *extension content scripts* in Safari too.
+  → **Never use `innerHTML`.** Build shields and overlays with `createElement`/`textContent`, and use
+  CSS classes via `<style>` text nodes.
+- **Reddit (new UI):** posts are `<shreddit-post>` custom elements. Attributes include
+  `content-href`, `author` and `score`, and the title is a child `[slot="title"]`. Read text from
+  there and confirm in DevTools.
+- **X:** match on `data-testid` attributes (X's own tests depend on them, so they're fairly
+  stable). Never match on obfuscated class names. Confirm the current names live.
+- **Store review timing:**
+  - Chrome: no promised review time. There was an April 2026 backlog; an Aug 2026 announcement
+    promised faster reviews.
+  - Firefox: signing takes up to 24 h, longer if chosen for manual review.
+  - Edge: about 6 days in one report.
+  
+  → Submit immediately. As a **launch-day fallback**, publish "load unpacked" instructions
+  (Chrome) and a **self-distributed signed .xpi** (Firefox) on GitHub Releases.
+
+### 🤖 Android / Play policy
+- Google is updating its Accessibility API policy to "reinforce existing rules against
+  **autonomous actions**". An automatic `GLOBAL_ACTION_BACK` might be read that way. → Default to
+  **covering the screen with an overlay** (the user taps to go back) instead of navigating
+  automatically. Make auto-back an opt-in setting.
+
+### 📱 Mute guide corrections
+- **Instagram** *does* have a keyword filter for suggested posts: on a post, **⋯ → Not interested →
+  Don't suggest posts with certain words**, also reachable from Settings → Content preferences.
+  It only affects *recommended* content, not accounts you follow.
+- **YouTube watch-history trick is confirmed:** with history off (and little past history), YouTube
+  shows a blank Home feed and drops "Up next" recommendations. A wave of this hit users in April 2026.
+
+---
+
 ## 0. Research update (10 Nov 2026): what changed the plan
 
 ### ⏰ Timing: launch is 9 days away
@@ -278,7 +363,9 @@ Language: **Kotlin + Jetpack Compose**. Min SDK 26.
 - On a match:
   - **Feed item** → draw an overlay (`TYPE_ACCESSIBILITY_OVERLAY`) over the item's on-screen bounds:
     "GTA 6 content hidden".
-  - **Video/Short actually playing** → cover the screen and/or `performGlobalAction(GLOBAL_ACTION_BACK)`.
+  - **Video/Short actually playing** → cover the screen with a full overlay and a "Go back"
+    button. Automatic `performGlobalAction(GLOBAL_ACTION_BACK)` is **opt-in only**, because of
+    Play's tightening rules on autonomous actions (§0b).
 - Same approach that existing apps like AppBlock use to block YouTube Shorts and Instagram Reels.
 - Performance: throttle events, cache verdicts per node text, process only the visible window.
 
@@ -487,3 +574,20 @@ worthwhile: the spoiler period lasts weeks after launch, and comes back for the 
 - Transformers.js WebGPU + CLIP in extensions — https://huggingface.co/docs/transformers.js/guides/webgpu , https://blog.mozilla.org/en/firefox/firefox-ai/running-inference-in-web-extensions/ , https://medium.com/@GenerationAI/transformers-js-onnx-runtime-webgpu-in-chrome-extension-13b563933ca9
 - Android Shorts blocker reference (Accessibility) — https://github.com/atick-faisal/Shorts-Blocker
 - NotificationListenerService — https://developer.android.com/reference/android/service/notification/NotificationListenerService
+
+**Added in the 11 Nov 2026 research pass**
+- Launch trailer (15 Oct 2026) — https://www.dexerto.com/gta/gta-6-launch-trailer-finally-released-with-another-look-at-missions-3279076/ , https://godisageek.com/2026/10/gta-6-launch-trailer-justice-ps5/
+- Character names incl. Extended Look — https://timesaver.gg/blog/gta-6-characters-jason-lucia-confirmed-2026 , https://rockstarreport.com/features/gta-6-characters-confirmed-rumoured-so-far
+- No mobile GTA 6 blocker; scam apps — https://www.gtaboom.com/how-to-avoid-gta-6-spoilers-online/ , https://nordvpn.com/fi/blog/gta-malware-and-scams/ , https://khelnow.com/gaming/gta-6-spoiler-protection-guide-mute-these-keywords-202611
+- Take-Two trademark/IP actions — https://www.gamesradar.com/gta-parent-company-take-two-reportedly-went-after-it-takes-twos-trademark , https://www.techdirt.com/company/ebrand/ , https://www.generationamiga.com/2025/12/27/take-twos-dmca-hammer-falls-on-fan-made-gta-browser-revival/
+- App Store trademark-in-name rejections — https://themoviedb.org/talk/64a5918b158c8500ffba86ef , https://developer.apple.com/forums/thread/84709 , https://developer.apple.com/forums/thread/131914
+- iOS 26 URL Filter — https://developer.apple.com/documentation/networkextension/url-filters.md , https://developer.apple.com/documentation/networkextension/filtering-traffic-by-url.md , https://textslashplain.com/2025/06/10/apple-url-filter-api/ , https://developer.apple.com/forums/thread/809913 , https://developer.apple.com/forums/thread/840630
+- Firefox 128 MAIN world — https://blog.mozilla.org/addons/2024/07/10/manifest-v3-updates-landed-in-firefox-128/
+- Safari MAIN world — https://developer.apple.com/forums/thread/728849 , https://extension.js.org/docs/browsers/safari
+- YouTube Trusted Types — https://developer.chrome.com/blog/trusted-types-on-youtube , https://bugs.webkit.org/show_bug.cgi?id=290037 , https://github.com/w3c/trusted-types/wiki/Effects-of-deploying-Trusted-Types-on-browser-extension-developers
+- Reddit shreddit-post structure — https://proxiesapi.com/articles/scraping-reddit-posts-with-rust
+- X data-testid stability — https://dev.to/ktg0215/i-built-a-chrome-extension-to-remove-xtwitters-algorithmic-feed-and-reclaim-my-timeline-o2e
+- Store review timing — https://developer.chrome.com/docs/webstore/review-process , https://developer.chrome.com/blog/cws-review-updates-2026 , https://groups.google.com/a/chromium.org/g/chromium-extensions/c/VJ6DcpEn51Y , https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/ , https://discourse.mozilla.org/t/unlisted-add-on-stuck-awaiting-validation-unsigned-for-a-week/148904
+- Play Accessibility policy preview (autonomous actions) — https://support.google.com/googleplay/android-developer/answer/13986130
+- Instagram "Don't suggest posts with certain words" — https://help.instagram.com/iphone-app/682833393310241 , https://transparency.meta.com/features/user-control-shape-your-experience-on-meta-platforms/
+- YouTube blank Home feed with history off — https://piunikaweb.com/2026/04/22/youtube-blank-home-page-watch-history-paused/ , https://www.androidauthority.com/youtube-watch-history-recommendations-requirement-3353536
