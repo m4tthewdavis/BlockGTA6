@@ -107,8 +107,11 @@ import { PageShield } from './shield';
   let lastHref = '';
   let lastTitle = '';
   function watchNavigation(): void {
+    let n = 0;
     const tick = () => {
-      if (location.href !== lastHref || document.title !== lastTitle) {
+      // Check immediately on URL/title changes, and every ~1.5 s anyway: some pages fill in their
+      // title/category after navigating (Twitch, TikTok).
+      if (location.href !== lastHref || document.title !== lastTitle || ++n % 5 === 0) {
         lastHref = location.href;
         lastTitle = document.title;
         checkPage(adapter);

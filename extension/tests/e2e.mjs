@@ -52,6 +52,13 @@ await context.route('**/*', async (route) => {
     return route.fulfill(html(fx('pages/reddit.html')));
   }
   if (h === 'x.com') return route.fulfill(html(fx('pages/x.html')));
+  if (h === 'www.tiktok.com') return route.fulfill(html(fx(url.pathname.includes('/video/') ? 'pages/tiktok-video.html' : 'pages/tiktok.html')));
+  if (h === 'www.instagram.com') return route.fulfill(html(fx('pages/instagram.html')));
+  if (h === 'www.facebook.com') return route.fulfill(html(fx('pages/facebook.html')));
+  if (h === 'www.twitch.tv') {
+    if (url.pathname === '/somestreamer') return route.fulfill(html(fx('pages/twitch-stream.html')));
+    return route.fulfill(html(fx('pages/twitch.html')));
+  }
   if (h === 'raw.githubusercontent.com' && url.pathname.endsWith('/rules/rules.json')) {
     // A "newer blocklist" adding a name that isn't in the bundled rules.
     const r = JSON.parse(fs.readFileSync(path.join(root, '..', 'rules', 'rules.json'), 'utf8'));
@@ -158,6 +165,49 @@ await test('X: GTA 6 tweet hidden (whole cell) and #GTAVI trend hidden', async (
   assert.equal(await visible('#cell1'), false);
   assert.equal(await visible('#cell2'), true);
   assert.equal(await visible('#trend1'), false);
+});
+
+console.log('TikTok / Instagram / Facebook / Twitch (beta)');
+await page.goto('https://www.tiktok.com/foryou');
+await page.waitForTimeout(600);
+await test('TikTok: GTA 6 feed item, profile tile and comment hidden; others shown', async () => {
+  assert.equal(await visible('#t1'), false);
+  assert.equal(await visible('#t3'), false, 'tile matched via image alt');
+  assert.equal(await visible('#t4'), false);
+  assert.equal(await visible('#t2'), true);
+});
+await test('TikTok: GTA 6 video page is covered', async () => {
+  await page.goto('https://www.tiktok.com/@someone/video/123456');
+  await page.waitForSelector('safehouse-shield', { state: 'attached', timeout: 3000 });
+});
+await page.goto('https://www.instagram.com/');
+await page.waitForTimeout(600);
+await test('Instagram: GTA 6 post and reel tile hidden; others shown', async () => {
+  assert.equal(await visible('#i1'), false);
+  assert.equal(await visible('#i3'), false);
+  assert.equal(await visible('#i2'), true);
+  assert.equal(await visible('#i4'), true);
+});
+await page.goto('https://www.facebook.com/');
+await page.waitForTimeout(600);
+await test('Facebook: GTA 6 post hidden; others shown', async () => {
+  assert.equal(await visible('#f1'), false);
+  assert.equal(await visible('#f2'), true);
+});
+await page.goto('https://www.twitch.tv/directory');
+await page.waitForTimeout(600);
+await test('Twitch: GTA VI streams hidden; GTA V RP and others shown', async () => {
+  assert.equal(await visible('#w1'), false);
+  assert.equal(await visible('#w2'), true);
+  assert.equal(await visible('#w3'), true);
+});
+await test('Twitch: stream page covered once its category loads as GTA VI', async () => {
+  await page.goto('https://www.twitch.tv/somestreamer');
+  await page.waitForSelector('safehouse-shield', { state: 'attached', timeout: 4000 });
+});
+await test('Twitch: GTA VI category page redirects to the block page', async () => {
+  await page.goto('https://www.twitch.tv/directory/category/grand-theft-auto-vi').catch(() => {});
+  await page.waitForURL(/blocked\.html/, { timeout: 3000 });
 });
 
 console.log('Settings');

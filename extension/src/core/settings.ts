@@ -1,4 +1,4 @@
-export const SITE_IDS = ['youtube', 'google', 'bing', 'duckduckgo', 'reddit', 'x'] as const;
+export const SITE_IDS = ['youtube', 'google', 'bing', 'duckduckgo', 'reddit', 'x', 'tiktok', 'instagram', 'facebook', 'twitch'] as const;
 export type SiteId = (typeof SITE_IDS)[number];
 
 export const SITE_LABELS: Record<SiteId, string> = {
@@ -8,6 +8,10 @@ export const SITE_LABELS: Record<SiteId, string> = {
   duckduckgo: 'DuckDuckGo',
   reddit: 'Reddit',
   x: 'X (Twitter)',
+  tiktok: 'TikTok (beta)',
+  instagram: 'Instagram (beta)',
+  facebook: 'Facebook (beta)',
+  twitch: 'Twitch (beta)',
 };
 
 export type Action = 'hide' | 'blur';
@@ -34,7 +38,10 @@ export const DEFAULT_SETTINGS: Settings = {
   pageShield: true,
   blockSites: true,
   includeOlderGta: false,
-  sites: { youtube: true, google: true, bing: true, duckduckgo: true, reddit: true, x: true },
+  sites: {
+    youtube: true, google: true, bing: true, duckduckgo: true, reddit: true, x: true,
+    tiktok: true, instagram: true, facebook: true, twitch: true,
+  },
   customKeywords: [],
   allowlist: [],
 };

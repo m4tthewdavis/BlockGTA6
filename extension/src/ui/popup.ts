@@ -45,7 +45,7 @@ async function main(): Promise<void> {
       await saveSettings(settings);
     });
   } catch {
-    siteLine.textContent = "Safehouse doesn't filter this page. It works on YouTube, Google, Bing, DuckDuckGo, Reddit and X.";
+    siteLine.textContent = "Safehouse doesn't filter this page. It works on YouTube, Google, Bing, DuckDuckGo, Reddit, X, TikTok, Instagram, Facebook and Twitch.";
   }
 }
 

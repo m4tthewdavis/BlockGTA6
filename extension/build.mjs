@@ -22,9 +22,16 @@ const SITES = [
   '*://*.reddit.com/*',
   '*://*.x.com/*',
   '*://*.twitter.com/*',
+  '*://www.tiktok.com/*',
+  '*://www.instagram.com/*',
+  '*://www.facebook.com/*',
+  '*://m.facebook.com/*',
+  '*://web.facebook.com/*',
+  '*://www.twitch.tv/*',
+  '*://m.twitch.tv/*',
 ];
 // Pages we redirect to the block page need host access for declarativeNetRequest redirects.
-const REDIRECT_HOSTS = ['*://*.rockstargames.com/*', '*://*.reddit.com/*'];
+const REDIRECT_HOSTS = ['*://*.rockstargames.com/*', '*://*.reddit.com/*', '*://*.twitch.tv/*', '*://*.tiktok.com/*', '*://*.instagram.com/*'];
 
 const DESCRIPTION =
   'Your safehouse from spoilers. Hides GTA 6 / GTA VI videos, posts and search results. Unofficial, not affiliated with Rockstar Games.';

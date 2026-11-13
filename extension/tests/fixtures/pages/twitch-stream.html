@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><title>somestreamer - Twitch</title></head>
+<body><video muted></video>
+<script>
+  // Category loads after the page, like the real site.
+  setTimeout(() => {
+    const a = document.createElement('a');
+    a.setAttribute('data-a-target', 'stream-game-link');
+    a.textContent = 'Grand Theft Auto VI';
+    document.body.appendChild(a);
+  }, 700);
+</script></body></html>

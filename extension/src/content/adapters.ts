@@ -133,6 +133,49 @@ export const ADAPTERS: Adapter[] = [
     pageGuard: (u) => /\/status\/\d+/.test(u.pathname),
     pageText: () => document.title,
   },
+  {
+    // Beta: selectors based on TikTok's data-e2e test attributes; verify against the live site.
+    id: 'tiktok',
+    host: /(^|\.)tiktok\.com$/,
+    cards: [
+      { sel: '[data-e2e="recommend-list-item-container"]' },
+      { sel: '[data-e2e="search_top-item"], [data-e2e="search_video-item"]' },
+      { sel: '[data-e2e="user-post-item"], [data-e2e="explore-item"]' },
+      { sel: '[data-e2e="comment-level-1"], [data-e2e="comment-level-2"]' },
+    ],
+    pageGuard: (u) => /\/video\/\d+/.test(u.pathname) || /\/photo\/\d+/.test(u.pathname),
+    pageText: () => [text('[data-e2e="browse-video-desc"], [data-e2e="video-desc"]'), document.title].join(' \n '),
+  },
+  {
+    // Beta: feed posts are <article>; grid tiles are links to /p/ or /reel/ whose image alt holds the caption.
+    id: 'instagram',
+    host: /(^|\.)instagram\.com$/,
+    cards: [
+      { sel: 'article' },
+      { sel: 'a[href^="/p/"], a[href^="/reel/"], a[href*="/reel/"]' },
+    ],
+    pageGuard: (u) => /^\/(p|reel|reels)\/[\w-]+/.test(u.pathname),
+    pageText: () => [text('h1'), document.title].join(' \n '),
+  },
+  {
+    // Beta: posts and comments are role="article".
+    id: 'facebook',
+    host: /(^|\.)facebook\.com$/,
+    cards: [{ sel: '[role="article"]' }],
+  },
+  {
+    // Beta: directory/browse cards are <article>; the stream page shows its category link.
+    id: 'twitch',
+    host: /(^|\.)twitch\.tv$/,
+    cards: [
+      { sel: 'article' },
+      { sel: '[data-a-target="side-nav-card"], .side-nav-card' },
+    ],
+    pageGuard: (u) =>
+      /^\/[A-Za-z0-9_]{3,25}\/?$/.test(u.pathname) &&
+      !/^\/(directory|search|settings|videos|downloads|jobs|p|turbo|prime|subscriptions|wallet|inventory|drops)\/?$/i.test(u.pathname),
+    pageText: () => text('[data-a-target="stream-game-link"], [data-a-target="stream-title"], h2[data-a-target="stream-title"]'),
+  },
 ];
 
 export function adapterFor(hostname: string): Adapter | null {
