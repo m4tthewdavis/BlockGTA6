@@ -11,9 +11,11 @@ Older GTA games (GTA 5, GTA Online, Vice City 2002) are left alone.
 - 🧩 [extension/](extension/): the browser extension for Chrome, Edge, Brave and Firefox (desktop + Android).
 
 **Status:**
-- **Browser extension v0.1.0 is built and tested.** See [extension/README.md](extension/README.md)
-  to try it (load unpacked) and for the store checklist. It still needs a check on the live sites
-  before store submission.
+- **Browser extension v0.2.0 is built and tested** on 10 sites, with automatic blocklist updates.
+  See [extension/README.md](extension/README.md) to try it.
+- 🛒 **[store/](store/): ready to submit.** Listing text, privacy policy, screenshots and a
+  step-by-step checklist. It still needs a check on the live sites and a few owner decisions
+  (license, public repo).
 - **Next:** live-site checks, then the store submissions, the Android app and the iOS app.
 
 *Safehouse is an independent project, not affiliated with, endorsed by or connected to Rockstar

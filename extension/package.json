@@ -1,16 +1,17 @@
 {
   "name": "safehouse-extension",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Safehouse – Spoiler Blocker: hides GTA 6 / GTA VI content on YouTube, Google, Reddit, X and more.",
-  "license": "MIT",
+  "description": "Safehouse \u2013 Spoiler Blocker: hides GTA 6 / GTA VI content on YouTube, Google, Reddit, X and more.",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "e2e": "node tests/e2e.mjs",
-    "package": "node build.mjs --zip"
+    "package": "node build.mjs --zip",
+    "source": "node tools/source-zip.mjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.280",

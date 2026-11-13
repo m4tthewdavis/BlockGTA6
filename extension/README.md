@@ -1,7 +1,7 @@
 # Safehouse – Spoiler Blocker (browser extension)
 
 Hides GTA 6 / GTA VI videos, posts and search results on **YouTube, Google, Bing, DuckDuckGo,
-Reddit and X**. One Manifest V3 codebase builds for **Chrome / Edge / Brave / Opera** and
+Reddit and X**, plus **TikTok, Instagram, Facebook and Twitch** (beta). One Manifest V3 codebase builds for **Chrome / Edge / Brave / Opera** and
 **Firefox (desktop + Android)**.
 
 ## How it works
@@ -12,6 +12,7 @@ Reddit and X**. One Manifest V3 codebase builds for **Chrome / Edge / Brave / Op
 | Page scanner | `src/content/scanner.ts`, `src/content/adapters.ts` | Catches everything else: on-page cards (comments, Shorts, Reddit posts, tweets, search results). Re-checks recycled elements. Hides or blurs. No `innerHTML` (YouTube enforces Trusted Types). |
 | Page shield | `src/content/shield.ts` | If you open a GTA 6 video, post or tweet directly, it covers the page, pauses media and offers *Go back* / *Show anyway*. |
 | Website blocking | `src/background/dnr.ts` | `declarativeNetRequest` rules: r/GTA6, r/GTAVI and Rockstar's `/VI` page redirect to the Safehouse block page. Hosts like `gta6….com` are blocked. |
+| Blocklist updates | `src/core/rules-store.ts` | Every 3 h the background downloads `rules/rules.json` from the repo's `main` branch, validates it strictly (data only) and uses it if its `version` is newer. Options page: version + *Check now*. |
 | Matcher | `src/core/matcher.ts` | Implements the shared algorithm in [`../rules/README.md`](../rules/README.md) using [`../rules/rules.json`](../rules/rules.json). |
 
 Settings (popup + options page) are kept in `chrome.storage.sync`. **Nothing leaves the device.**
@@ -25,6 +26,8 @@ npm test             # unit tests: shared test vectors, YouTube JSON filter, sit
 npm run build        # -> dist/chrome and dist/firefox
 npm run e2e          # loads dist/chrome in Chromium against offline copies of YouTube/Google/Reddit/X
 npm run package      # build + dist/safehouse-{chrome,firefox}-<version>.zip
+npm run source       # dist/safehouse-source-<version>.zip for Firefox review (committed files)
+node tools/store-assets.mjs   # regenerate ../store/images (needs a build first)
 ```
 
 `npm run e2e` and `node tools/make-icons.mjs` use a globally installed Playwright with Chromium.
@@ -36,6 +39,8 @@ npm run package      # build + dist/safehouse-{chrome,firefox}-<version>.zip
   `extension/dist/firefox/manifest.json`.
 
 ## Before submitting to the stores
+See **[`../store/README.md`](../store/README.md)** for the full checklist, listing text and privacy policy.
+
 1. **Check against the live sites.** The automated tests use offline copies of each page (the
    build machine couldn't reach YouTube/Google/Reddit/X). Load the extension and check:
    - YouTube home, search, a watch page, Shorts and comments
@@ -57,9 +62,7 @@ npm run package      # build + dist/safehouse-{chrome,firefox}-<version>.zip
    title, and include the no-affiliation line (see `PLAN.md` §0c).
 
 ## Not done yet
-- Remote `rules.json` updates (rules are currently bundled; refresh them in launch week by
-  shipping a new version).
-- TikTok web, Instagram web, Facebook, Twitch adapters.
+- Live-site verification of all selectors (especially the beta sites).
 - Safari (macOS/iOS) build through Xcode's `safari-web-extension-converter`. On Safari the MAIN-world
   script must be registered with `scripting.registerContentScripts`.
 - Thumbnail image recognition.

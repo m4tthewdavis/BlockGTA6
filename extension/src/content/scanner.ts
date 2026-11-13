@@ -12,12 +12,21 @@ const MAX_TEXT = 5000;
 export const SCANNER_CSS = `
 [${ATTR}="hide"] { display: none !important; }
 [${ATTR}="blur"] {
-  filter: blur(14px) grayscale(1) !important;
+  position: relative !important;
   cursor: pointer !important;
   user-select: none !important;
-  transition: filter .15s ease;
+  color: transparent !important;
+  text-shadow: 0 0 12px rgba(127, 127, 127, .9) !important;
 }
-[${ATTR}="blur"] * { pointer-events: none !important; }
+[${ATTR}="blur"] > * { filter: blur(14px) grayscale(1) !important; pointer-events: none !important; }
+[${ATTR}="blur"]::after {
+  content: "Hidden by Safehouse";
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  max-width: 92%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 6px 12px; border-radius: 999px; z-index: 1; pointer-events: none;
+  background: rgba(15, 23, 32, .88); color: #f2efe8; text-shadow: none;
+  font: 600 12px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
 `;
 
 function cardText(el: Element, rule: CardRule): string {
