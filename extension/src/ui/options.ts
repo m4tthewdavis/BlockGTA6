@@ -1,11 +1,13 @@
 import { createMatcher } from '../core/matcher';
-import { BUNDLED_RULES } from '../core/rules';
+import type { Rules } from '../core/rules';
+import { REMOTE_META_KEY, getEffectiveRules, onRulesChanged, type RulesMeta } from '../core/rules-store';
 import { SITE_IDS, SITE_LABELS, loadSettings, parseList, saveSettings, type Settings } from '../core/settings';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 async function main(): Promise<void> {
   let settings: Settings = await loadSettings();
+  let rules: Rules = await getEffectiveRules();
   if (new URLSearchParams(location.search).has('welcome')) $('welcome').hidden = false;
 
   const saved = $('saved');
@@ -72,7 +74,7 @@ async function main(): Promise<void> {
       result.className = 'result';
       return;
     }
-    const match = createMatcher(BUNDLED_RULES, {
+    const match = createMatcher(rules, {
       customKeywords: settings.customKeywords,
       allowlist: settings.allowlist,
       includeOlderGta: settings.includeOlderGta,
@@ -82,6 +84,35 @@ async function main(): Promise<void> {
     result.textContent = reason ? `Hidden (${reason.replace(':', ': ')})` : 'Shown';
   }
   tester.addEventListener('input', runTest);
+
+  // Blocklist version / updates
+  const info = $('rulesInfo');
+  const btn = $<HTMLButtonElement>('checkRules');
+  const RESULT: Record<RulesMeta['lastResult'], string> = {
+    updated: 'updated',
+    'up-to-date': 'up to date',
+    invalid: 'download was invalid, kept the current list',
+    error: "couldn't reach the update server",
+  };
+  async function showRulesInfo(): Promise<void> {
+    const meta = (await chrome.storage.local.get(REMOTE_META_KEY))[REMOTE_META_KEY] as RulesMeta | undefined;
+    const when = meta ? ` · last check ${new Date(meta.lastChecked).toLocaleString()}: ${RESULT[meta.lastResult]}` : '';
+    info.textContent = `Version ${rules.version}${when}`;
+  }
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    await chrome.runtime.sendMessage({ type: 'refreshRules' });
+    rules = await getEffectiveRules();
+    await showRulesInfo();
+    runTest();
+    btn.disabled = false;
+  });
+  onRulesChanged((r) => {
+    rules = r;
+    void showRulesInfo();
+    runTest();
+  });
+  void showRulesInfo();
 }
 
 void main();

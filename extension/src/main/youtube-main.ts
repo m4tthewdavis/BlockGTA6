@@ -9,7 +9,7 @@
  *   live via window.postMessage.
  */
 import { createMatcher, type Matcher } from '../core/matcher';
-import { BUNDLED_RULES } from '../core/rules';
+import { pickRules } from '../core/rules-store';
 import { CFG_STORAGE_KEY, MSG_FROM_CONTENT, MSG_FROM_MAIN, type MainWorldConfig } from '../shared/bridge';
 import { filterYouTubeData } from './yt-filter';
 
@@ -40,7 +40,7 @@ import { filterYouTubeData } from './yt-filter';
   let pendingReport = 0;
 
   function build(c: MainWorldConfig): Matcher {
-    return createMatcher(BUNDLED_RULES, {
+    return createMatcher(pickRules(c.rules), {
       customKeywords: c.customKeywords,
       allowlist: c.allowlist,
       includeOlderGta: c.includeOlderGta,

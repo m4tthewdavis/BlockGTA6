@@ -44,7 +44,7 @@ function manifest(browser) {
       default_icon: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png' },
     },
     options_ui: { page: 'options.html', open_in_tab: true },
-    permissions: ['storage', 'declarativeNetRequest'],
+    permissions: ['storage', 'declarativeNetRequest', 'alarms'],
     host_permissions: [...new Set([...SITES, ...REDIRECT_HOSTS])],
     content_scripts: [
       { matches: YOUTUBE, js: ['youtube-main.js'], run_at: 'document_start', world: 'MAIN' },

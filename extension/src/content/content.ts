@@ -5,7 +5,8 @@
  * - On YouTube, forwards settings to the MAIN-world JSON filter and collects its counts.
  */
 import { createMatcher, type Matcher } from '../core/matcher';
-import { BUNDLED_RULES } from '../core/rules';
+import type { Rules } from '../core/rules';
+import { getEffectiveRules, onRulesChanged } from '../core/rules-store';
 import { loadSettings, onSettingsChanged, type Settings } from '../core/settings';
 import { CFG_STORAGE_KEY, MSG_FROM_CONTENT, MSG_FROM_MAIN, type MainWorldConfig, type RuntimeMessage } from '../shared/bridge';
 import { adapterFor, type Adapter } from './adapters';
@@ -35,14 +36,14 @@ import { PageShield } from './shield';
     }
   });
 
-  let settings: Settings = await loadSettings();
+  let [settings, rules]: [Settings, Rules] = await Promise.all([loadSettings(), getEffectiveRules()]);
   let match: Matcher = buildMatcher(settings);
   let scanner: Scanner | null = null;
   const shield = new PageShield();
   let domCount = 0;
 
   function buildMatcher(s: Settings): Matcher {
-    return createMatcher(BUNDLED_RULES, {
+    return createMatcher(rules, {
       customKeywords: s.customKeywords,
       allowlist: s.allowlist,
       includeOlderGta: s.includeOlderGta,
@@ -64,6 +65,7 @@ import { PageShield } from './shield';
       includeOlderGta: settings.includeOlderGta,
       customKeywords: settings.customKeywords,
       allowlist: settings.allowlist,
+      rules,
     };
     try {
       localStorage.setItem(CFG_STORAGE_KEY, JSON.stringify(cfg));
@@ -141,6 +143,12 @@ import { PageShield } from './shield';
   onSettingsChanged((s) => {
     settings = s;
     match = buildMatcher(s);
+    apply();
+  });
+
+  onRulesChanged((r) => {
+    rules = r;
+    match = buildMatcher(settings);
     apply();
   });
 

@@ -52,6 +52,13 @@ await context.route('**/*', async (route) => {
     return route.fulfill(html(fx('pages/reddit.html')));
   }
   if (h === 'x.com') return route.fulfill(html(fx('pages/x.html')));
+  if (h === 'raw.githubusercontent.com' && url.pathname.endsWith('/rules/rules.json')) {
+    // A "newer blocklist" adding a name that isn't in the bundled rules.
+    const r = JSON.parse(fs.readFileSync(path.join(root, '..', 'rules', 'rules.json'), 'utf8'));
+    r.version = 999;
+    r.unique.push('zebra cartel');
+    return route.fulfill(json(JSON.stringify(r)));
+  }
   return route.continue();
 });
 
@@ -118,6 +125,7 @@ await test('Google: GTA 6 results hidden, GTA 5 and others shown', async () => {
   assert.equal(await visible('#r3'), false, 'r3 (Jason Duval) visible');
   assert.equal(await visible('#r2'), true, 'r2 (GTA 5) hidden');
   assert.equal(await visible('#r4'), true, 'r4 hidden');
+  assert.equal(await visible('#r5'), true, 'r5 (not in bundled rules yet) hidden');
 });
 
 console.log('Reddit');
@@ -173,6 +181,18 @@ await test('Options tester reports matches', async () => {
   await opts.fill('#tester', 'GTA 5 heist guide');
   assert.match(await opts.textContent('#testResult'), /Shown/);
   await opts.close();
+});
+await test('Blocklist update: "Check now" downloads newer rules and pages use them', async () => {
+  const opts = await context.newPage();
+  await opts.goto(`chrome-extension://${extId}/options.html`);
+  await opts.click('#checkRules');
+  await opts.waitForFunction(() => document.getElementById('rulesInfo').textContent.includes('Version 999'), null, { timeout: 5000 });
+  await opts.fill('#tester', 'zebra cartel ending');
+  assert.match(await opts.textContent('#testResult'), /Hidden/);
+  await opts.close();
+  await page.goto('https://www.google.com/search?q=gta');
+  await page.waitForTimeout(600);
+  assert.notEqual(await attr('#r5'), null, 'r5 should now be hidden/blurred');
 });
 await test('Turning protection off shows everything again', async () => {
   const opts = await context.newPage();

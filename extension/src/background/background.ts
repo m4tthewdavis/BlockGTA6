@@ -1,4 +1,4 @@
-import { BUNDLED_RULES } from '../core/rules';
+import { getEffectiveRules, onRulesChanged, refreshRules } from '../core/rules-store';
 import { DEFAULT_SETTINGS, loadSettings, mergeSettings, onSettingsChanged, saveSettings, type Settings } from '../core/settings';
 import type { RuntimeMessage } from '../shared/bridge';
 import { FIRST_SESSION_ID, allowOnceRule, buildDnrRules } from './dnr';
@@ -8,7 +8,8 @@ const BADGE_COLOR = '#3a4756';
 async function applySiteBlocking(s: Settings): Promise<void> {
   const existing = await chrome.declarativeNetRequest.getDynamicRules();
   const removeRuleIds = existing.map((r) => r.id);
-  const addRules = s.enabled && s.blockSites ? buildDnrRules(BUNDLED_RULES, chrome.runtime.getURL('blocked.html')) : [];
+  const rules = await getEffectiveRules();
+  const addRules = s.enabled && s.blockSites ? buildDnrRules(rules, chrome.runtime.getURL('blocked.html')) : [];
   await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules });
 }
 
@@ -16,6 +17,14 @@ async function init(): Promise<void> {
   const s = await loadSettings();
   await applySiteBlocking(s).catch((e) => console.error('Safehouse: could not apply site rules', e));
 }
+
+// ---- Blocklist updates (data only; see core/rules-store.ts) ----
+const RULES_ALARM = 'safehouse-rules-refresh';
+chrome.alarms.create(RULES_ALARM, { delayInMinutes: 1, periodInMinutes: 180 });
+chrome.alarms.onAlarm.addListener((a) => {
+  if (a.name === RULES_ALARM) void refreshRules();
+});
+onRulesChanged(() => void loadSettings().then(applySiteBlocking));
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   const stored = await chrome.storage.sync.get('settings');
@@ -36,6 +45,10 @@ chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender, sendResponse)
     chrome.action.setBadgeBackgroundColor({ tabId, color: BADGE_COLOR }).catch(() => {});
     chrome.action.setBadgeText({ tabId, text: msg.count > 0 ? String(Math.min(msg.count, 999)) : '' }).catch(() => {});
     return false;
+  }
+  if (msg.type === 'refreshRules') {
+    refreshRules().then(sendResponse, (e) => sendResponse({ lastResult: 'error', error: String(e) }));
+    return true;
   }
   if (msg.type === 'allowOnce' && typeof msg.url === 'string' && /^https?:\/\//.test(msg.url)) {
     const rule = allowOnceRule(nextSessionId++, msg.url);

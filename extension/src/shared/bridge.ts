@@ -11,10 +11,13 @@ export interface MainWorldConfig {
   includeOlderGta: boolean;
   customKeywords: string[];
   allowlist: string[];
+  /** Newest blocklist (a downloaded update, if any). Validated again in the MAIN world. */
+  rules?: unknown;
 }
 
 /** Extension-internal runtime messages. */
 export type RuntimeMessage =
   | { type: 'count'; count: number }
   | { type: 'getCount' }
-  | { type: 'allowOnce'; url: string };
+  | { type: 'allowOnce'; url: string }
+  | { type: 'refreshRules' };
